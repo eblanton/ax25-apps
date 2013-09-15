@@ -620,6 +620,11 @@ int io_error(
 				fprintf (stderr, "message was %d bytes long.\n", bufsize);
 				return 0;
 			}
+                        if (errno == ENETDOWN || ENETRESET || ENETUNREACH || EHOSTDOWN || EHOSTUNREACH || ENONET  ) {   /* host closed his axip receiver or dropped the line */
+                                perror("error after sending on to axip partner. ignoring.");
+				LOGL4("error after sending on to axip partner: %s; ignoring!\n", strerror(errno));
+                                return 0;
+                        }
 			if (errno == ENOBUFS) {	/* congestion; sleep + retry */
 				LOGL4("send congestion on raw ip, sleeping and retrying!\n");
 				usleep(100000);
@@ -638,6 +643,11 @@ int io_error(
 				fprintf(stderr, "message was %d bytes long.\n", bufsize);
 				return 0;
 			}
+                        if (errno == ENETDOWN || ENETRESET || ENETUNREACH || EHOSTDOWN || EHOSTUNREACH || ENONET  ) {   /* host closed his axudp receiver or dropped the line */
+                                perror("error after sending to axudp partner. ignoring.");
+				LOGL4("error after sending to axudp partner: %s; ignoring!\n", strerror(errno));
+                                return 0;
+                        }
 			if (errno == ENOBUFS) {	/* congestion; sleep + retry */
 				LOGL4("send congestion on udp, sleeping and retrying!\n");
 				usleep(100000);
