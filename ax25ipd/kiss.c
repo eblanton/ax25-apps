@@ -70,7 +70,11 @@ void assemble_kiss(unsigned char *buf, int l)
 		if (c == FEND) {
 			if (ifcount > 0) {
 				/* Make sure that the control byte is zero */
-				if (*iframe == '\0' || *iframe == 0x10) {
+				if (*iframe == '\0' || *iframe == 0x10 || *iframe & 0x80) {
+					/* Multiport KISS has a CRC */
+					if (*iframe & 0x80) {
+						ifcount -= 2;
+					}
 					/* Room for CRC in buffer? */
 					if (ifcount < (MAX_FRAME - 2)) {
 						stats.kiss_in++;
